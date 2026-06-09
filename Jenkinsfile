@@ -31,10 +31,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                script {
-                    // Build the Docker image using the Dockerfile in the current directory
-                    def customImage = docker.build("${IMAGE_NAME}:${env.BUILD_ID}")
-                }
+                bat "docker build -t ${IMAGE_NAME}:${env.BUILD_ID} ."
             }
         }
 
