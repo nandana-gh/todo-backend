@@ -69,7 +69,7 @@ namespace ToDoApi.Controllers
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, user.Username),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                    new Claim("UserId", user.Id.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(jwtSettings.GetValue<int>("ExpireMinutes")),
                 Issuer = jwtSettings.GetValue<string>("Issuer"),

@@ -21,7 +21,7 @@ namespace ToDoApi.Controllers
 
         private Guid GetUserId()
         {
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userIdString = User.FindFirstValue("UserId");
             if (Guid.TryParse(userIdString, out var userId))
             {
                 return userId;
@@ -32,92 +32,64 @@ namespace ToDoApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTasks()
         {
-            try 
-            {
-                var userId = GetUserId();
-                var tasks = await _context.Tasks
-                    .Where(t => t.UserId == userId)
-                    .OrderByDescending(t => t.CreatedAt)
-                    .ToListAsync();
+            var userId = GetUserId();
+            var tasks = await _context.Tasks
+                .Where(t => t.UserId == userId)
+                .OrderByDescending(t => t.CreatedAt)
+                .ToListAsync();
 
-                return Ok(tasks);
-            }
-            catch (UnauthorizedAccessException) 
-            {
-                return Unauthorized();
-            }
+            return Ok(tasks);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateTask(CreateTaskDto model)
         {
-            try
+            var userId = GetUserId();
+
+            var task = new TodoTask
             {
-                var userId = GetUserId();
+                UserId = userId,
+                Title = model.Title
+            };
 
-                var task = new TodoTask
-                {
-                    UserId = userId,
-                    Title = model.Title
-                };
+            _context.Tasks.Add(task);
+            await _context.SaveChangesAsync();
 
-                _context.Tasks.Add(task);
-                await _context.SaveChangesAsync();
-
-                return CreatedAtAction(nameof(GetTasks), new { id = task.Id }, task);
-            }
-            catch (UnauthorizedAccessException) 
-            {
-                return Unauthorized();
-            }
+            return CreatedAtAction(nameof(GetTasks), new { id = task.Id }, task);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTask(Guid id, UpdateTaskDto model)
         {
-            try 
+            var userId = GetUserId();
+            var task = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
+
+            if (task == null)
             {
-                var userId = GetUserId();
-                var task = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
-
-                if (task == null)
-                {
-                    return NotFound(new { message = "Task not found" });
-                }
-
-                task.IsCompleted = model.IsCompleted;
-                await _context.SaveChangesAsync();
-
-                return Ok(task);
+                return NotFound(new { message = "Task not found" });
             }
-            catch (UnauthorizedAccessException) 
-            {
-                return Unauthorized();
-            }
+
+            task.IsCompleted = model.IsCompleted;
+            await _context.SaveChangesAsync();
+
+            return Ok(task);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(Guid id)
         {
-            try 
+            var userId = GetUserId();
+            var task = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
+
+            if (task == null)
             {
-                var userId = GetUserId();
-                var task = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
-
-                if (task == null)
-                {
-                    return NotFound(new { message = "Task not found" });
-                }
-
-                _context.Tasks.Remove(task);
-                await _context.SaveChangesAsync();
-
-                return Ok(new { message = "Task deleted successfully" });
+                return NotFound(new { message = "Task not found" });
             }
-            catch (UnauthorizedAccessException) 
-            {
-                return Unauthorized();
-            }
+
+            _context.Tasks.Remove(task);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Task deleted successfully" });
         }
     }
 }
