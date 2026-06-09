@@ -17,17 +17,14 @@ pipeline {
         stage('Restore Dependencies') {
             steps {
                 echo 'Restoring .NET dependencies...'
-                // Use 'bat' if running directly on a Windows Jenkins agent without WSL/Bash
-                // bat 'dotnet restore ToDoApi/ToDoApi.csproj'
-                sh 'dotnet restore ToDoApi/ToDoApi.csproj'
+                bat 'dotnet restore ToDoApi/ToDoApi.csproj'
             }
         }
 
         stage('Build API') {
             steps {
                 echo 'Building .NET application for production...'
-                // bat 'dotnet build ToDoApi/ToDoApi.csproj -c Release --no-restore'
-                sh 'dotnet build ToDoApi/ToDoApi.csproj -c Release --no-restore'
+                bat 'dotnet build ToDoApi/ToDoApi.csproj -c Release --no-restore'
             }
         }
 
