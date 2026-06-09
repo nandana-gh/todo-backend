@@ -112,3 +112,4 @@ D:\Angular Apps\to-do-list\todo-backend\ToDoApi\obj\Debug\net8.0\refint\ToDoApi.
 D:\Angular Apps\to-do-list\todo-backend\ToDoApi\obj\Debug\net8.0\ToDoApi.pdb
 D:\Angular Apps\to-do-list\todo-backend\ToDoApi\obj\Debug\net8.0\ToDoApi.genruntimeconfig.cache
 D:\Angular Apps\to-do-list\todo-backend\ToDoApi\obj\Debug\net8.0\ref\ToDoApi.dll
+D:\Angular Apps\to-do-list\todo-backend\ToDoApi\obj\Debug\net8.0\ToDoApi.sourcelink.json
