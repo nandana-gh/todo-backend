@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        ACR     = 'todoacr'
+        ACR     = 'todoacr2026'
         RG      = 'todo-rg'
         AKS     = 'todo-aks'
         LOCATION = 'southindia'
